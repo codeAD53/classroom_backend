@@ -17,12 +17,19 @@ router.get('/', async(req,res)=>{
 
         //If search query exits, filter by subject name OR subject code
         if(search){
+            // filterConditions.push(
+            //     or(
+            //         ilike(Subjects.name, `%${search}%`),
+            //         ilike(Subjects.code, `%${search}%`)//The ilike patterns %${search} only match values ending with the search term. For "contains" matching, use %${search}%.
+                // )
+            // );
+            const escapedSearch = String(search).replace(/[%_\\]/g, '\\$&')
             filterConditions.push(
                 or(
-                    ilike(Subjects.name, `%${search}%`),
-                    ilike(Subjects.code, `%${search}%`)//The ilike patterns %${search} only match values ending with the search term. For "contains" matching, use %${search}%.
+                    ilike(Subjects.name, `%${escapedSearch}`),
+                    ilike(Subjects.code, `%${escapedSearch}`)
                 )
-            );
+            )
         }
 if(department){
     // filterConditions.push(
