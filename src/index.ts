@@ -1,5 +1,4 @@
 import { eq } from 'drizzle-orm';
-// The 'pool' export will only exist for WebSocket and node-postgres drivers
 import { db } from './db/db';
 import { Departments } from './db/schemas/app';
 
