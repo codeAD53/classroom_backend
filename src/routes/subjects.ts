@@ -24,15 +24,16 @@ router.get('/', async(req,res)=>{
                 )
             );
         }
-            if(department){
-                // filterConditions.push(
-                //     ilike(Departments.name,`%${department}`),
-                        
-                    
-                // )
-                const deptPattern = `&${String(department).replace(/[%_]/g, '\\$')}%`
-                filterConditions.push(ilike(Departments.name,deptPattern))
-            }
+if(department){
+    // filterConditions.push(
+    //     ilike(Departments.name,`%${department}`),
+            
+        
+    // )
+   const escapedDept = String(department).replace(/[%_\\]/g, '\\$&');
+   const deptPattern = `%${escapedDept}%`;
+   filterConditions.push(ilike(Departments.name, deptPattern));
+}
         
 
         //Combine all filters using AND if any exits
