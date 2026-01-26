@@ -9,8 +9,8 @@ const router = express.Router();
 router.get('/', async(req,res)=>{
     try{
         const {search,department,page = 1, limit = 10} = req.query;
-        const currentPage = Math.max(1, +page);
-        const limitPerPage = Math.max(1, +limit);
+        const currentPage = Math.max(1, Number(page)) || 1;
+        const limitPerPage = Math.max(1, Number(limit)) || 10;
 
         const offset = (currentPage - 1) * limitPerPage;
         const filterConditions = [];
@@ -19,10 +19,11 @@ router.get('/', async(req,res)=>{
         if(search){
             filterConditions.push(
                 or(
-                    ilike(Subjects.name, `%${search}`),
-                    ilike(Subjects.code, `%${search}`)
+                    ilike(Subjects.name, `%${search}%`),
+                    ilike(Subjects.code, `%${search}%`)//The ilike patterns %${search} only match values ending with the search term. For "contains" matching, use %${search}%.
                 )
             );
+        }
             if(department){
                 filterConditions.push(
                     ilike(Departments.name,`%${department}`),
@@ -30,7 +31,7 @@ router.get('/', async(req,res)=>{
                     
                 )
             }
-        }
+        
 
         //Combine all filters using AND if any exits
         const whereClause = filterConditions.length > 0 ? and(...filterConditions) : undefined;
@@ -59,7 +60,7 @@ router.get('/', async(req,res)=>{
             }
         })
     }catch(e){
-        console.error('GET /subjects error: ${e');
+        console.error('GET /subjects error: ${e}');
         res.status(500).json({error: 'Failed to get subjects'})
     }
 })
