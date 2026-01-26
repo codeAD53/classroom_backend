@@ -1,5 +1,5 @@
 {
-  "id": "4c41510e-8a3f-4b45-b006-4f020876f144",
+  "id": "7e78e17d-18d5-431e-a61e-a6cbd9492eb8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -81,6 +81,23 @@
         "id": {
           "name": "id",
           "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "Subjects_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "department_id": {
+          "name": "department_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -119,12 +136,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "Subjects_id_Departments_id_fk": {
-          "name": "Subjects_id_Departments_id_fk",
+        "Subjects_department_id_Departments_id_fk": {
+          "name": "Subjects_department_id_Departments_id_fk",
           "tableFrom": "Subjects",
           "tableTo": "Departments",
           "columnsFrom": [
-            "id"
+            "department_id"
           ],
           "columnsTo": [
             "id"

@@ -1,51 +1,23 @@
-import { eq } from 'drizzle-orm';
-import { db } from './db/db';
-import { Departments } from './db/schemas/app';
+import express from 'express'
+import subjectsRouter from './routes/subjects';
+import cors from 'cors'
+const app = express();
+const PORT = 8000;
 
-async function main() {
-  try {
-    console.log('Performing CRUD operations on Departments...');
+app.use(express.json())
+app.use('/api/subjects', subjectsRouter)
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    methods: ['GET','POST','PUT','DELETE'],
+    credentials: true
+}))
 
-    // CREATE: Insert a new department
-    const [newDept] = await db
-      .insert(Departments)
-      .values({ code: 'CS', name: 'Computer Science', description: 'Department of Computer Science' })
-      .returning();
+app.get('/',(req,res)=>{
+    res.send("Hello")
+})
 
-    if (!newDept) {
-      throw new Error('Failed to create department');
-    }
 
-    console.log('✅ CREATE: New department created:', newDept);
+app.listen(PORT,() => {
+    console.log(`Server running on http://localhost:${PORT}`)
+})
 
-    // READ: Select the department
-    const foundDept = await db.select().from(Departments).where(eq(Departments.id, newDept.id));
-    console.log('✅ READ: Found department:', foundDept[0]);
-
-    // UPDATE: Change the department's name
-    const [updatedDept] = await db
-      .update(Departments)
-      .set({ name: 'Advanced Computer Science' })
-      .where(eq(Departments.id, newDept.id))
-      .returning();
-
-    if (!updatedDept) {
-      throw new Error('Failed to update department');
-    }
-
-    console.log('✅ UPDATE: Department updated:', updatedDept);
-
-    // DELETE: Remove the department
-    await db.delete(Departments).where(eq(Departments.id, newDept.id));
-    console.log('✅ DELETE: Department deleted.');
-
-    console.log('\nCRUD operations completed successfully.');
-  } catch (error) {
-    console.error('❌ Error performing CRUD operations:', error);
-    process.exit(1);
-  } finally {
-    // For Neon Serverless (HTTP), no pool to close
-  }
-}
-
-main();

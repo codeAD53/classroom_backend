@@ -2,32 +2,12 @@
   "version": "7",
   "dialect": "postgresql",
   "entries": [
+    
     {
       "idx": 0,
       "version": "7",
-      "when": 1769432886201,
-      "tag": "0000_sad_absorbing_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1769434751074,
-      "tag": "0001_wooden_talos",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1769435063614,
-      "tag": "0002_misty_namor",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1769436326141,
-      "tag": "0003_ordinary_nitro",
+      "when": 1769437440014,
+      "tag": "0002_adorable_slyde",
       "breakpoints": true
     }
   ]
