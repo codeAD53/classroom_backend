@@ -22,6 +22,13 @@
       "when": 1769435063614,
       "tag": "0002_misty_namor",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1769436326141,
+      "tag": "0003_ordinary_nitro",
+      "breakpoints": true
     }
   ]
 }
