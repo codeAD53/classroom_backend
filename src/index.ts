@@ -1,12 +1,51 @@
-import express from 'express'
+import { eq } from 'drizzle-orm';
+import { db } from './db/db';
+import { Departments } from './db/schemas/app';
 
-const app = express();
-const PORT = 4000
+async function main() {
+  try {
+    console.log('Performing CRUD operations on Departments...');
 
-app.use(express.json())
+    // CREATE: Insert a new department
+    const [newDept] = await db
+      .insert(Departments)
+      .values({ code: 'CS', name: 'Computer Science', description: 'Department of Computer Science' })
+      .returning();
 
-app.get('/', (req,res)=>{
-    res.send('Hello! Welcome to classroom ')
-})
+    if (!newDept) {
+      throw new Error('Failed to create department');
+    }
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))
+    console.log('✅ CREATE: New department created:', newDept);
+
+    // READ: Select the department
+    const foundDept = await db.select().from(Departments).where(eq(Departments.id, newDept.id));
+    console.log('✅ READ: Found department:', foundDept[0]);
+
+    // UPDATE: Change the department's name
+    const [updatedDept] = await db
+      .update(Departments)
+      .set({ name: 'Advanced Computer Science' })
+      .where(eq(Departments.id, newDept.id))
+      .returning();
+
+    if (!updatedDept) {
+      throw new Error('Failed to update department');
+    }
+
+    console.log('✅ UPDATE: Department updated:', updatedDept);
+
+    // DELETE: Remove the department
+    await db.delete(Departments).where(eq(Departments.id, newDept.id));
+    console.log('✅ DELETE: Department deleted.');
+
+    console.log('\nCRUD operations completed successfully.');
+  } catch (error) {
+    console.error('❌ Error performing CRUD operations:', error);
+    process.exit(1);
+  } finally {
+    // For Neon Serverless (HTTP), no pool to close
+  }
+}
+
+main();
