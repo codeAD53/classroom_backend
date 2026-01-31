@@ -27,11 +27,5 @@ export const aj = arcjet({
         "CATEGORY:PREVIEW", // Link previews e.g. Slack, Discord
       ],
     }),
-    // Create a token bucket rate limit. Other algorithms are supported.
-   slidingWindow({
-    mode: 'LIVE',
-    interval: '2s',
-    max: 1
-   })
   ],
 });

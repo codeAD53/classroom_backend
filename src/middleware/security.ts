@@ -1,4 +1,5 @@
 import type {Request, Response, NextFunction } from "express";
+import type { IncomingMessage } from "http";
 import {aj} from '../config/arcjet'
 import { slidingWindow } from "@arcjet/node";
 const securityMiddleware = async (req:Request,res:Response,next:NextFunction) => {
@@ -31,7 +32,7 @@ const securityMiddleware = async (req:Request,res:Response,next:NextFunction) =>
                 })
             )
 
-            const arcjetRequest:ArcjetNodeRequest = {
+            const arcjetRequest:IncomingMessage = {
                     headers: req.headers,
                     method: req.method,
                     url: req.originalUrl ?? req.url,
@@ -45,7 +46,7 @@ const securityMiddleware = async (req:Request,res:Response,next:NextFunction) =>
                 return res.status(403).json({error: 'Fordidden',message: 'Request blocked by security policy.'})
             }
             if(decision.isDenied() && decision.reason.isRateLimit()){
-                return res.status(403).json({error: 'Too many Requests',message})
+                return res.status(429).json({error: 'Too many Requests',message})
             }
             next();
         }catch(e){
