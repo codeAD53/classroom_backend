@@ -1,7 +1,11 @@
 import arcjet, {shield,detectBot,slidingWindow} from "@arcjet/node";
 
-if(!process.env.ARCJET_KEY && process.env.NODE_ENV != 'test'){
-    throw new Error("ARCJET_KEY enc is required")
+if (!process.env.ARCJET_KEY) {
+  throw new Error("ARCJET_KEY env is required");
+}
+
+if (!process.env.ARCJET_KEY.startsWith("ajkey_")) {
+  throw new Error("Invalid ARCJET_KEY format. Key must start with 'ajkey_'.");
 }
 
 export const aj = arcjet({

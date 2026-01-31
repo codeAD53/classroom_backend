@@ -1,8 +1,6 @@
 import type {Request, Response, NextFunction } from "express";
 import {aj} from '../config/arcjet'
 import { slidingWindow } from "@arcjet/node";
-import { error } from "node:console";
-import { ne } from "drizzle-orm";
 const securityMiddleware = async (req:Request,res:Response,next:NextFunction) => {
         if(process.env.NODE_ENV === 'test') return next();
         try{
@@ -13,16 +11,16 @@ const securityMiddleware = async (req:Request,res:Response,next:NextFunction) =>
             switch(role){
                 case "admin":
                     limit=20;
-                    message: "Admin request limit exceeded (20 per minute). Slow Now"
+                    message="Admin request limit exceeded (20 per minute). Slow Now"
                     break;
                 case "teacher":
                 case "student":
                     limit=10;
-                    message: "Student request limit exceeded (10 per minute)"
+                    message= "Student request limit exceeded (10 per minute)"
                     break;
                 default:
-                    limit: 5
-                    message: "Guest request limit exceeded (5 per minute). Please sign up for higher limits." 
+                    limit= 5
+                    message= "Guest request limit exceeded (5 per minute). Please sign up for higher limits." 
                     break;
             }
             const client = aj.withRule(
@@ -41,7 +39,7 @@ const securityMiddleware = async (req:Request,res:Response,next:NextFunction) =>
             }
             const decision = await client.protect(arcjetRequest);
             if(decision.isDenied() && decision.reason.isBot()){
-                return res.status(403).json({error: 'Fordidden',message: 'Automated requests are not allowed.'})
+                return res.status(403).json({error: 'Forbidden',message: 'Automated requests are not allowed.'})
             }
             if(decision.isDenied() && decision.reason.isShield()){
                 return res.status(403).json({error: 'Fordidden',message: 'Request blocked by security policy.'})
