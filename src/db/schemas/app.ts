@@ -47,7 +47,7 @@ export const Classes = pgTable('classes', {
     description: text('description'),
     capacity: integer('capacity').default(50).notNull(),
     status: classStatusEnum('status').default('active').notNull(),
-    schedules: jsonb('schedules').$type<Schedule[]>(),
+    schedules: jsonb('schedules').$type<Schedule[] | null>(),
     ...timestamps
 }, (table) => ({
     subjectIdx: index('subject_id_idx').on(table.subjectID),
