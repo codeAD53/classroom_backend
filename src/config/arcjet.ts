@@ -1,4 +1,4 @@
-import arcjet, {shield,detectBot,slidingWindow} from "@arcjet/node";
+import arcjet, {shield,detectBot} from "@arcjet/node";
 
 if (!process.env.ARCJET_KEY) {
   throw new Error("ARCJET_KEY env is required");
