@@ -6,13 +6,14 @@ import {
   primaryKey,
   integer,
   pgEnum,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import type { AdapterAccount } from "@auth/core/adapters";
+
 
 const timestamps = {
   createdAt: timestamp("created_At").defaultNow().notNull(),
-  updateAt: timestamp("update_At")
+  updatedAt: timestamp("update_At")
     .defaultNow()
     .$onUpdate(() => new Date())
     .notNull(),
@@ -24,10 +25,10 @@ export const user = pgTable("user", {
   id: text("id").notNull().primaryKey(),
   name: text("name"),
   email: text("email").notNull(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  emailVerified: boolean("email_Verified").default(false).notNull(),
   image: text("image"),
   role: roleEnum("role").default("student").notNull(),
-  imageCldPubId: text("imageCldPubId"),
+  imageCldPubId: text("image_cld_pub_id"),
   ...timestamps,
 });
 
@@ -39,12 +40,14 @@ export const userRelations = relations(user, ({ many }) => ({
 export const account = pgTable(
   "account",
   {
+    id: text("id").notNull().unique(),
     userId: text("userId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"]>().notNull(),
+    accountId: text("account_id"),
     provider: text("provider").notNull(),
     providerAccountId: text("providerAccountId").notNull(),
+    password: text("password"),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
     expires_at: integer("expires_at"),
@@ -69,11 +72,14 @@ export const accountRelations = relations(account, ({ one }) => ({
 }));
 
 export const session = pgTable("session", {
-  sessionToken: text("sessionToken").notNull().primaryKey(),
+   id: text("id").primaryKey(),
+  sessionToken: text("session_Token").notNull(),
   userId: text("userId")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  expires: timestamp("expires", { mode: "date" }).notNull(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
+  expires: timestamp("expires_at", { mode: "date" }).notNull(),
   ...timestamps,
 });
 

@@ -12,8 +12,6 @@ import classesRouter from './routes/classes';
 const app = express();
 const PORT = 8000;
 
-app.use(express.json())
-
 if(!process.env.FRONTEND_URL){
     throw new Error('Frontend_URL is not set in .env file')
 }
@@ -23,7 +21,10 @@ app.use(cors({
     credentials: true
 }));
 
-app.all('/api/auth/*splat',toNodeHandler(auth))
+// Auth handler must be before express.json() or client API can get stuck (better-auth docs)
+app.all('/api/auth/*splat',toNodeHandler(auth));
+
+app.use(express.json())
 
 app.use(securityMiddleware)
 app.use('/api/subjects', subjectsRouter)
